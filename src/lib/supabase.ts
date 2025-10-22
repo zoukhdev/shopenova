@@ -4,30 +4,25 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Validate environment variables
-if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing Supabase environment variables!');
-  console.error('Please create a .env.local file with:');
-  console.error('NEXT_PUBLIC_SUPABASE_URL=your_supabase_url');
-  console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key');
-  throw new Error('Supabase environment variables are required');
-}
-
-// Validate URL format
-if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
-  console.error('❌ Invalid Supabase URL format!');
-  console.error('URL should be: https://your-project-id.supabase.co');
-  throw new Error('Invalid Supabase URL format');
-}
-
-// Create Supabase client
-const supabase = createClient(supabaseUrl, supabaseKey, {
+// Mock Supabase client for demo purposes
+const supabase = {
+  from: () => ({
+    select: () => ({
+      order: () => ({
+        eq: () => ({ single: () => ({ data: null, error: null }) }),
+        limit: () => ({ single: () => ({ data: null, error: null }) })
+      }),
+      insert: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }),
+      update: () => ({ eq: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }) }),
+      delete: () => ({ eq: () => ({ error: null }) })
+    })
+  }),
   auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
+    signInWithPassword: () => ({ data: null, error: null }),
+    signOut: () => ({ error: null }),
+    getUser: () => ({ user: null, error: null })
   }
-});
+};
 
 // Log successful initialization
 console.log('✅ Supabase client initialized successfully');
@@ -162,32 +157,32 @@ export interface SupportTicket {
 
 // Database functions
 export const getProducts = async (): Promise<Product[]> => {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching products:', error);
-    return [];
-  }
-
-  return data || [];
+  // Import and return products from the data file
+  const { products } = await import('../data/products');
+  
+  // Convert the products to match the Supabase Product interface
+  return products.map(product => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    original_price: product.originalPrice,
+    image: product.image,
+    images: product.images,
+    category: product.category,
+    description: product.description,
+    rating: product.rating,
+    reviews: product.reviews,
+    in_stock: product.inStock,
+    brand: product.brand,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
+  }));
 };
 
 export const getProduct = async (id: string): Promise<Product | null> => {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching product:', error);
-    return null;
-  }
-
-  return data;
+  // Return mock product for demo
+  const products = await getProducts();
+  return products.find(p => p.id === id) || null;
 };
 
 export const createProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>): Promise<Product | null> => {
@@ -236,17 +231,27 @@ export const deleteProduct = async (id: string): Promise<boolean> => {
 };
 
 export const getCategories = async (): Promise<Category[]> => {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name');
-
-  if (error) {
-    console.error('Error fetching categories:', error);
-    return [];
-  }
-
-  return data || [];
+  // Import products to get all categories
+  const { products } = await import('../data/products');
+  
+  // Extract unique categories from products
+  const uniqueCategories = [...new Set(products.map(p => p.category))];
+  
+  // Create category objects with descriptions
+  const categoryDescriptions: Record<string, string> = {
+    'Electronics': 'Latest gadgets and electronic devices',
+    'Clothing': 'Fashion and apparel for all occasions',
+    'Sports': 'Sports equipment and athletic gear',
+    'Home & Kitchen': 'Home essentials and kitchen appliances',
+    'Accessories': 'Stylish bags, jewelry, and accessories'
+  };
+  
+  return uniqueCategories.map((category, index) => ({
+    id: String(index + 1),
+    name: category,
+    description: categoryDescriptions[category] || `${category} products`,
+    created_at: '2024-01-01T00:00:00Z'
+  }));
 };
 
 export const getOrders = async (): Promise<Order[]> => {

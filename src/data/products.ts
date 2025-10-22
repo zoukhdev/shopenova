@@ -211,5 +211,304 @@ export const products: Product[] = [
       'Power': '300W',
       'Color': 'Empire Red'
     }
+  },
+  {
+    id: '9',
+    name: 'MacBook Pro 16-inch M3 Pro',
+    price: 2499.99,
+    originalPrice: 2799.99,
+    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400',
+    category: 'Electronics',
+    description: 'The most powerful MacBook Pro ever. M3 Pro chip delivers incredible performance for professionals.',
+    images: [
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400',
+      'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
+    ],
+    rating: 4.9,
+    reviews: 3421,
+    inStock: true,
+    brand: 'Apple',
+    features: ['M3 Pro chip', '16-inch Liquid Retina XDR display', 'Up to 22 hours battery', 'Advanced camera system'],
+    specifications: {
+      'Processor': 'Apple M3 Pro',
+      'Display': '16.2-inch Liquid Retina XDR',
+      'Storage': '512GB SSD',
+      'Memory': '18GB unified memory'
+    }
+  },
+  {
+    id: '10',
+    name: 'Nike Air Jordan 1 Retro High',
+    price: 170.00,
+    originalPrice: 200.00,
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400',
+    category: 'Sports',
+    description: 'The iconic Air Jordan 1 in classic colorway. Premium leather construction with timeless style.',
+    images: [
+      'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400',
+      'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400',
+      'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400',
+    ],
+    rating: 4.7,
+    reviews: 2156,
+    inStock: true,
+    brand: 'Nike',
+    features: ['Premium leather', 'Air-Sole unit', 'Classic design', 'High-top silhouette'],
+    specifications: {
+      'Upper': 'Premium leather',
+      'Cushioning': 'Air-Sole unit',
+      'Outsole': 'Rubber',
+      'Style': 'High-top'
+    }
+  },
+  {
+    id: '11',
+    name: 'Dyson V15 Detect Cordless Vacuum',
+    price: 749.99,
+    originalPrice: 849.99,
+    image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400',
+    category: 'Home & Kitchen',
+    description: 'Advanced cordless vacuum with laser dust detection and powerful suction for deep cleaning.',
+    images: [
+      'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400',
+      'https://images.unsplash.com/photo-1581578731548-c6a0c3f2f2be?w=400',
+      'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400',
+    ],
+    rating: 4.8,
+    reviews: 1876,
+    inStock: true,
+    brand: 'Dyson',
+    features: ['Laser dust detection', '60-minute runtime', 'Powerful suction', 'HEPA filtration'],
+    specifications: {
+      'Runtime': '60 minutes',
+      'Suction': '230 AW',
+      'Filtration': 'HEPA',
+      'Weight': '3.0 kg'
+    }
+  },
+  {
+    id: '12',
+    name: 'Ray-Ban Aviator Classic Sunglasses',
+    price: 154.00,
+    image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400',
+    category: 'Accessories',
+    description: 'The original aviator sunglasses with timeless style and superior UV protection.',
+    images: [
+      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400',
+      'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400',
+      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400',
+    ],
+    rating: 4.6,
+    reviews: 1234,
+    inStock: true,
+    brand: 'Ray-Ban',
+    features: ['100% UV protection', 'Crystal lenses', 'Metal frame', 'Classic aviator style'],
+    specifications: {
+      'Lens Material': 'Crystal',
+      'Frame': 'Metal',
+      'UV Protection': '100%',
+      'Style': 'Aviator'
+    }
+  },
+  {
+    id: '13',
+    name: 'Canon EOS R6 Mark II Camera',
+    price: 2499.99,
+    originalPrice: 2799.99,
+    image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400',
+    category: 'Electronics',
+    description: 'Professional mirrorless camera with 24.2MP full-frame sensor and advanced autofocus.',
+    images: [
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400',
+      'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400',
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400',
+    ],
+    rating: 4.9,
+    reviews: 987,
+    inStock: true,
+    brand: 'Canon',
+    features: ['24.2MP full-frame sensor', '4K video recording', 'Advanced autofocus', 'Weather sealed'],
+    specifications: {
+      'Sensor': '24.2MP Full-frame',
+      'Video': '4K 60p',
+      'Autofocus': 'Dual Pixel CMOS AF II',
+      'ISO': '100-102400'
+    }
+  },
+  {
+    id: '14',
+    name: 'Levi\'s 501 Original Jeans',
+    price: 89.99,
+    originalPrice: 120.00,
+    image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400',
+    category: 'Clothing',
+    description: 'The original blue jean. Classic 501 fit with straight leg and button fly.',
+    images: [
+      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400',
+      'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400',
+      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400',
+    ],
+    rating: 4.5,
+    reviews: 3456,
+    inStock: true,
+    brand: 'Levi\'s',
+    features: ['100% cotton denim', 'Straight fit', 'Button fly', 'Classic 501 style'],
+    specifications: {
+      'Material': '100% Cotton',
+      'Fit': 'Straight',
+      'Fly': 'Button',
+      'Style': 'Classic 501'
+    }
+  },
+  {
+    id: '15',
+    name: 'Instant Pot Duo 7-in-1 Electric Pressure Cooker',
+    price: 99.99,
+    originalPrice: 149.99,
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+    category: 'Home & Kitchen',
+    description: '7-in-1 electric pressure cooker that replaces 7 kitchen appliances in one.',
+    images: [
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+    ],
+    rating: 4.7,
+    reviews: 4567,
+    inStock: true,
+    brand: 'Instant Pot',
+    features: ['7-in-1 functionality', 'Pressure cooking', 'Slow cooking', 'Rice cooking'],
+    specifications: {
+      'Capacity': '6 quarts',
+      'Functions': '7-in-1',
+      'Power': '1000W',
+      'Material': 'Stainless steel'
+    }
+  },
+  {
+    id: '16',
+    name: 'Adidas Ultraboost 22 Running Shoes',
+    price: 180.00,
+    originalPrice: 220.00,
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
+    category: 'Sports',
+    description: 'Premium running shoes with responsive Boost midsole and Primeknit upper.',
+    images: [
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
+      'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400',
+      'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400',
+    ],
+    rating: 4.6,
+    reviews: 2789,
+    inStock: true,
+    brand: 'Adidas',
+    features: ['Boost midsole', 'Primeknit upper', 'Continental rubber outsole', 'Responsive cushioning'],
+    specifications: {
+      'Midsole': 'Boost',
+      'Upper': 'Primeknit',
+      'Outsole': 'Continental rubber',
+      'Weight': '10.2 oz'
+    }
+  },
+  {
+    id: '17',
+    name: 'Bose QuietComfort 45 Headphones',
+    price: 329.99,
+    originalPrice: 399.99,
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+    category: 'Electronics',
+    description: 'Premium noise-canceling headphones with world-class sound and all-day comfort.',
+    images: [
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+      'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400',
+      'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400',
+    ],
+    rating: 4.8,
+    reviews: 1923,
+    inStock: true,
+    brand: 'Bose',
+    features: ['Noise canceling', '24-hour battery', 'Comfortable fit', 'Premium sound'],
+    specifications: {
+      'Battery Life': '24 hours',
+      'Noise Canceling': 'Yes',
+      'Connectivity': 'Bluetooth 5.1',
+      'Weight': '240g'
+    }
+  },
+  {
+    id: '18',
+    name: 'Patagonia Better Sweater Fleece Jacket',
+    price: 149.99,
+    originalPrice: 179.99,
+    image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400',
+    category: 'Clothing',
+    description: 'Sustainable fleece jacket made from recycled polyester with classic styling.',
+    images: [
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400',
+      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400',
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400',
+    ],
+    rating: 4.7,
+    reviews: 1456,
+    inStock: true,
+    brand: 'Patagonia',
+    features: ['Recycled polyester', 'Classic fit', 'Full-zip', 'Sustainable materials'],
+    specifications: {
+      'Material': 'Recycled polyester',
+      'Fit': 'Classic',
+      'Zipper': 'Full-zip',
+      'Sustainability': 'Fair Trade Certified'
+    }
+  },
+  {
+    id: '19',
+    name: 'Vitamix A3500 Ascent Series Blender',
+    price: 549.99,
+    originalPrice: 649.99,
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+    category: 'Home & Kitchen',
+    description: 'Professional-grade blender with variable speed control and built-in wireless connectivity.',
+    images: [
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+    ],
+    rating: 4.9,
+    reviews: 2341,
+    inStock: true,
+    brand: 'Vitamix',
+    features: ['Variable speed control', 'Self-detect containers', 'Wireless connectivity', 'Professional performance'],
+    specifications: {
+      'Power': '2.2 peak HP',
+      'Speed': 'Variable 1-10',
+      'Container': '64 oz',
+      'Connectivity': 'Wireless'
+    }
+  },
+  {
+    id: '20',
+    name: 'Rolex Submariner Watch',
+    price: 8999.99,
+    originalPrice: 10999.99,
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+    category: 'Accessories',
+    description: 'Iconic diving watch with automatic movement and water resistance to 300 meters.',
+    images: [
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+      'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=400',
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400',
+    ],
+    rating: 4.9,
+    reviews: 567,
+    inStock: true,
+    brand: 'Rolex',
+    features: ['Automatic movement', 'Water resistant 300m', 'Ceramic bezel', 'Oystersteel case'],
+    specifications: {
+      'Movement': 'Automatic',
+      'Water Resistance': '300 meters',
+      'Case': 'Oystersteel',
+      'Bezel': 'Ceramic'
+    }
   }
 ];

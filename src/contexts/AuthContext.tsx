@@ -36,20 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getSession = useCallback(async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error('Error getting session:', error);
-        setLoading(false);
-        return;
-      }
-
-      if (session?.user) {
-        setSession(session);
-        await handleSignIn(session.user);
-      } else {
-        setLoading(false);
-      }
+      // Mock session for demo purposes
+      setLoading(false);
     } catch (error) {
       console.error('Error getting session:', error);
       setLoading(false);
@@ -59,28 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Get initial session
     getSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('🔐 Auth state changed:', event, session?.user?.email);
-        
-        if (event === 'SIGNED_IN' && session?.user) {
-          setSession(session);
-          await handleSignIn(session.user);
-        } else if (event === 'SIGNED_OUT') {
-          setSession(null);
-          handleSignOut();
-        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-          setSession(session);
-          await handleSignIn(session.user);
-        }
-        
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    // Skip auth state change listener for demo
   }, [getSession]);
 
   const handleSignIn = async (authUser: User) => {

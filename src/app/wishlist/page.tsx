@@ -9,11 +9,17 @@ import { removeFromWishlist } from '../../lib/wishlistSlice';
 import { RootState } from '../../lib/store';
 import { useLanguage } from '../../contexts/LanguageContext';
 import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 export default function WishlistPage() {
   const dispatch = useDispatch();
   const { t } = useLanguage();
+  const [isClient, setIsClient] = useState(false);
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleRemoveFromWishlist = (id: string) => {
     dispatch(removeFromWishlist(id));
@@ -24,6 +30,18 @@ export default function WishlistPage() {
     dispatch(addToCart({ ...item, quantity: 1 }));
     toast.success(`${item.name} ${t('wishlist.added_to_cart')}`);
   };
+
+  // Show loading state during hydration
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading wishlist...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (wishlistItems.length === 0) {
     return (
