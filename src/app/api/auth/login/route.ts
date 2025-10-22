@@ -64,7 +64,6 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Supabase auth error:', error);
-      console.error('Error code:', error.code);
       console.error('Error message:', error.message);
 
       // Provide more specific error messages
