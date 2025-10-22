@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShopNova - Your Online Marketplace",
+  title: "ShopSphere - Your Online Marketplace",
   description: "Discover amazing products at great prices",
   icons: {
     icon: [

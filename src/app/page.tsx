@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
-import { getProducts, getCategories, Product, Category } from '../lib/supabase';
+import { apiService } from '../lib/api';
 import { ShoppingBag, Truck, Shield, Headphones, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useLanguage();
   
@@ -68,15 +68,28 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Fetch data from Supabase
+  // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         console.log('🔄 Homepage: Fetching data...');
-        const [products, categories] = await Promise.all([
-          getProducts(),
-          getCategories()
+        const [productsResponse, categoriesResponse] = await Promise.all([
+          apiService.getProducts(),
+          apiService.getCategories()
         ]);
+        
+        if (productsResponse.error) {
+          console.error('❌ Homepage: Error fetching products:', productsResponse.error);
+          return;
+        }
+        
+        if (categoriesResponse.error) {
+          console.error('❌ Homepage: Error fetching categories:', categoriesResponse.error);
+          return;
+        }
+        
+        const products = productsResponse.data?.products || [];
+        const categories = categoriesResponse.data?.categories || [];
         
         console.log('✅ Homepage: Products fetched:', products.length);
         console.log('✅ Homepage: Categories fetched:', categories.length);

@@ -56,7 +56,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo - Hidden on mobile, visible on sm+ */}
           <Link href="/" className="hidden sm:block text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            ShopNova
+            ShopSphere
           </Link>
 
           {/* Desktop Navigation */}
@@ -259,6 +259,31 @@ export default function Header() {
               >
                 {t('nav.categories')}
               </Link>
+              
+              {/* Mobile Cart and Wishlist */}
+              <div className="flex items-center space-x-4 py-2">
+                <Link 
+                  href="/wishlist" 
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Heart size={20} />
+                  <span>{t('nav.wishlist')}</span>
+                </Link>
+                <Link 
+                  href="/cart" 
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors relative"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <ShoppingCart size={20} />
+                  <span>{t('nav.cart')}</span>
+                  {cartItemCount > 0 && (
+                    <span className="bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-medium">
+                      {cartItemCount > 99 ? '99+' : cartItemCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
               
               {/* Mobile Settings Section */}
               <div className="border-t border-gray-200 dark:border-gray-600 my-4"></div>

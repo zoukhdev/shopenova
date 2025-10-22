@@ -146,6 +146,11 @@ class ApiService {
     });
   }
 
+  // Categories API
+  async getCategories() {
+    return this.request<{ categories: any[] }>('/api/categories');
+  }
+
   // Orders API
   async getOrders(params?: { status?: string; customerId?: string }) {
     const queryParams = new URLSearchParams();

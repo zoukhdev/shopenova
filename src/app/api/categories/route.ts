@@ -5,7 +5,6 @@ import { getCategories } from '../../../lib/supabase';
 export async function GET(request: NextRequest) {
   try {
     const categories = await getCategories();
-    
     return NextResponse.json({ categories });
   } catch (error) {
     console.error('Error fetching categories:', error);
