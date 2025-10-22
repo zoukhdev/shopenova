@@ -1,5 +1,4 @@
 // Database configuration and utilities
-import { createClient } from '@supabase/supabase-js';
 
 // For development, we'll use a local JSON file as database
 // In production, you can replace this with Supabase, PostgreSQL, or any other database

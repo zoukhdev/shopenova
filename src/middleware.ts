@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
 
       // Token is valid, continue to admin page
       return NextResponse.next();
-    } catch (error) {
+    } catch {
       // Invalid token, redirect to login
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }

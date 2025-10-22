@@ -35,7 +35,7 @@ function SignupForm() {
           if (url.origin === window.location.origin) {
             setReturnTo(returnToParam);
           }
-        } catch (error) {
+        } catch {
           console.log('Invalid returnTo URL, using default');
         }
       }

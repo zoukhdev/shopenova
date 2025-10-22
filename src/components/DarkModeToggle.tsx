@@ -6,7 +6,7 @@ import { Sun, Moon } from 'lucide-react';
 
 export default function DarkModeToggle() {
   const [mounted, setMounted] = useState(false);
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

@@ -97,7 +97,7 @@ export default function WishlistPage() {
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-4 h-4 ${i < Math.floor(item.rating) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                         className={`w-4 h-4 ${i < Math.floor(item.rating || 0) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >

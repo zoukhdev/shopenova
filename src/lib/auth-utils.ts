@@ -20,7 +20,7 @@ export function getLoginUrl(returnTo?: string): string {
     if (url.origin === (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')) {
       return `/login?returnTo=${encodeURIComponent(returnTo)}`;
     }
-  } catch (error) {
+  } catch {
     console.warn('Invalid returnTo URL:', returnTo);
   }
   
@@ -46,7 +46,7 @@ export function getSignupUrl(returnTo?: string): string {
     if (url.origin === (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')) {
       return `/signup?returnTo=${encodeURIComponent(returnTo)}`;
     }
-  } catch (error) {
+  } catch {
     console.warn('Invalid returnTo URL:', returnTo);
   }
   

@@ -1,4 +1,5 @@
 // Persistence utilities for Redux store
+import { RootState } from './store';
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem('reduxState');
@@ -6,16 +7,16 @@ export const loadState = () => {
       return undefined;
     }
     return JSON.parse(serializedState);
-  } catch (err) {
+  } catch {
     return undefined;
   }
 };
 
-export const saveState = (state: any) => {
+export const saveState = (state: RootState) => {
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem('reduxState', serializedState);
-  } catch (err) {
+  } catch {
     // Handle errors silently
   }
 };

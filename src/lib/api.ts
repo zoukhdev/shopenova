@@ -14,6 +14,8 @@ export interface Product {
   reviews?: number;
   inStock?: boolean;
   brand?: string;
+  features?: string[];
+  specifications?: Record<string, string>;
   created_at?: string;
   updated_at?: string;
 }
