@@ -161,6 +161,7 @@ export const getProducts = async (): Promise<Product[]> => {
       name: product.name,
       price: product.price,
       original_price: product.originalPrice,
+      originalPrice: product.originalPrice, // Also include for ProductCard compatibility
       image: product.image,
       images: product.images,
       category: product.category,
@@ -168,6 +169,7 @@ export const getProducts = async (): Promise<Product[]> => {
       rating: product.rating,
       reviews: product.reviews,
       in_stock: product.inStock,
+      inStock: product.inStock, // Also include for ProductCard compatibility
       brand: product.brand,
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-01T00:00:00Z'
