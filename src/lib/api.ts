@@ -148,7 +148,7 @@ class ApiService {
 
   // Categories API
   async getCategories() {
-    return this.request<{ categories: any[] }>('/api/categories');
+    return this.request<{ categories: Array<{id: string; name: string; description?: string}> }>('/api/categories');
   }
 
   // Orders API

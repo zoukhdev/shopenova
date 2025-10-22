@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
 import { apiService } from '../lib/api';
-import { ShoppingBag, Truck, Shield, Headphones, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ShoppingBag, Truck, Shield, Headphones, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Array<{id: string; name: string; price: number; image: string; category: string; description: string; rating?: number; reviews?: number; originalPrice?: number; inStock?: boolean; brand?: string}>>([]);
+  const [categories, setCategories] = useState<Array<{id: string; name: string; description?: string}>>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useLanguage();
   

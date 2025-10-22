@@ -26,7 +26,7 @@ export default function WishlistPage() {
     toast.success(t('wishlist.removed_from_wishlist'));
   };
 
-  const handleAddToCart = (item: any) => {
+  const handleAddToCart = (item: {id: string; name: string; price: number; image: string; category: string; description: string; rating?: number; reviews?: number; originalPrice?: number; inStock?: boolean; brand?: string}) => {
     dispatch(addToCart({ ...item, quantity: 1 }));
     toast.success(`${item.name} ${t('wishlist.added_to_cart')}`);
   };
