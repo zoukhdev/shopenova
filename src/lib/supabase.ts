@@ -1,20 +1,42 @@
 // Mock Supabase client for demo purposes
 const supabase = {
-  from: () => ({
-    select: () => ({
-      order: () => ({
-        eq: () => ({ single: () => ({ data: null, error: null }) }),
-        limit: () => ({ single: () => ({ data: null, error: null }) })
+  from: (table: string) => ({
+    select: (columns?: string) => ({
+      order: (column: string, options?: { ascending?: boolean }) => ({
+        eq: (column: string, value: any) => ({ 
+          single: () => ({ data: null, error: null }),
+          limit: (count: number) => ({ single: () => ({ data: null, error: null }) })
+        }),
+        limit: (count: number) => ({ single: () => ({ data: null, error: null }) })
       }),
-      insert: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }),
-      update: () => ({ eq: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }) }),
-      delete: () => ({ eq: () => ({ error: null }) })
+      eq: (column: string, value: any) => ({ 
+        single: () => ({ data: null, error: null }),
+        limit: (count: number) => ({ single: () => ({ data: null, error: null }) })
+      }),
+      single: () => ({ data: null, error: null }),
+      limit: (count: number) => ({ single: () => ({ data: null, error: null }) })
+    }),
+    insert: (data: any) => ({ 
+      select: (columns?: string) => ({ single: () => ({ data: null, error: null }) })
+    }),
+    update: (data: any) => ({ 
+      eq: (column: string, value: any) => ({ 
+        select: (columns?: string) => ({ single: () => ({ data: null, error: null }) })
+      })
+    }),
+    delete: () => ({ 
+      eq: (column: string, value: any) => ({ error: null })
     })
   }),
   auth: {
-    signInWithPassword: () => ({ data: null, error: null }),
+    signInWithPassword: (credentials: { email: string; password: string }) => ({ data: null, error: null }),
+    signUp: (credentials: { email: string; password: string; options?: { data?: { first_name?: string; last_name?: string; phone?: string } } }) => ({ data: null, error: null }),
     signOut: () => ({ error: null }),
-    getUser: () => ({ user: null, error: null })
+    getUser: () => ({ user: null, error: null }),
+    getSession: () => ({ data: { session: null }, error: null }),
+    setSession: (session: { access_token: string; refresh_token: string }) => ({ data: null, error: null }),
+    updateUser: (attributes: { password?: string }) => ({ data: null, error: null }),
+    resetPasswordForEmail: (email: string, options?: { redirectTo?: string }) => ({ data: null, error: null })
   }
 };
 

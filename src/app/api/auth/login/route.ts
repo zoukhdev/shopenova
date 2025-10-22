@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { signIn, getUser, getCurrentUser } from '../../../../lib/supabase';
-import { supabase } from '../../../../lib/supabase';
+import { signIn } from '../../../../lib/supabase';
 
 // POST /api/auth/login - User login
 export async function POST(request: NextRequest) {
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
     
     if (demoUser) {
       // Create demo user data
-      const userDetails = {
+      const userData = {
         id: 'demo-' + Date.now(),
         email: demoUser.email,
         first_name: demoUser.firstName,
@@ -43,98 +42,27 @@ export async function POST(request: NextRequest) {
       
       // Create a session token
       const token = Buffer.from(JSON.stringify({
-        userId: userDetails.id,
-        email: userDetails.email,
-        role: userDetails.role,
-        firstName: userDetails.first_name,
-        lastName: userDetails.last_name,
+        userId: userData.id,
+        email: userData.email,
+        role: userData.role,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
         exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
       })).toString('base64');
       
       return NextResponse.json({
-        user: userDetails,
+        user: userData,
         token,
         message: 'Login successful (demo mode)'
       });
     }
     
-    // Use Supabase authentication for real users
-    console.log('Attempting Supabase auth for:', email);
-    const { data, error } = await signIn(email, password);
-
-    // Since we're using mock authentication, error will always be null
-    // In a real implementation, you would check the error here
-    if (error) {
-      console.error('Supabase auth error:', error);
-      return NextResponse.json(
-        { error: 'Authentication failed. Please try again' },
-        { status: 401 }
-      );
-    }
-
-    console.log('Supabase auth successful, data:', data);
-
-    // Get user details from Supabase Auth
-    const { user: authUser } = await getCurrentUser();
-
-    if (!authUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 401 }
-      );
-    }
-
-    // Determine if this is a customer or admin/staff login
-    // If the email exists in the users table, treat as admin/staff
-  const userDetails = await getUser(authUser.id);
-    if (userDetails) {
-      // Admin/staff login: check is_active
-      if (!userDetails.is_active) {
-        console.log('User account is deactivated');
-        return NextResponse.json(
-          { error: 'Account is deactivated' },
-          { status: 401 }
-        );
-      }
-      // Create a session token
-      const token = Buffer.from(JSON.stringify({
-        userId: userDetails.id,
-        email: userDetails.email,
-        role: userDetails.role,
-        exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-      })).toString('base64');
-      return NextResponse.json({
-        user: userDetails,
-        token,
-        message: 'Login successful'
-      });
-    } else {
-      // Customer login: check customers table by email
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('email', authUser.email)
-        .single();
-
-      if (customerError || !customerData) {
-        return NextResponse.json(
-          { error: 'Customer account not found' },
-          { status: 401 }
-        );
-      }
-      // Create a session token
-      const token = Buffer.from(JSON.stringify({
-        userId: customerData.id,
-        email: customerData.email,
-        role: 'customer',
-        exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-      })).toString('base64');
-      return NextResponse.json({
-        user: customerData,
-        token,
-        message: 'Login successful'
-      });
-    }
+    // For non-demo users, return authentication failed
+    return NextResponse.json(
+      { error: 'Invalid credentials' },
+      { status: 401 }
+    );
+    
   } catch (error) {
     console.error('Error during login:', error);
     return NextResponse.json(

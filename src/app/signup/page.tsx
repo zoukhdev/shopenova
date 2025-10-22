@@ -86,54 +86,16 @@ function SignupForm() {
     try {
       console.log('📝 Creating new user account...');
       
-      // Sign up with Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            phone: formData.phone,
-          }
-        }
-      });
-
-      if (error) {
-        console.error('Signup error:', error);
-        
-        // Handle specific error cases
-        if (error.message.includes('User already registered')) {
-          toast.error('An account with this email already exists. Please sign in instead.');
-        } else if (error.message.includes('Password should be at least')) {
-          toast.error('Password must be at least 6 characters long.');
-        } else if (error.message.includes('Invalid email')) {
-          toast.error('Please enter a valid email address.');
-        } else {
-          toast.error(`Signup failed: ${error.message}`);
-        }
-        return;
-      }
-
-      if (data.user) {
-        console.log('✅ Account created successfully for:', data.user.email);
-        
-        // Check if email confirmation is required
-        if (data.user.email_confirmed_at) {
-          // Email confirmed immediately (development mode)
-          setSignupSuccess(true);
-          toast.success('Account created successfully! You can now sign in.');
-          
-          // Redirect to login with returnTo
-          setTimeout(() => {
-            window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
-          }, 2000);
-        } else {
-          // Email confirmation required
-          setSignupSuccess(true);
-          toast.success('Account created! Please check your email to confirm your account.');
-        }
-      }
+      // For mock authentication, we'll simulate successful signup
+      console.log('✅ Mock signup successful for:', formData.email);
+      
+      setSignupSuccess(true);
+      toast.success('Account created successfully! You can now sign in.');
+      
+      // Redirect to login with returnTo
+      setTimeout(() => {
+        window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
+      }, 2000);
     } catch (error) {
       console.error('Unexpected signup error:', error);
       toast.error('An unexpected error occurred. Please try again.');

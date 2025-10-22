@@ -50,51 +50,33 @@ function LoginForm() {
     try {
       console.log('🔐 Attempting login with:', formData.email);
       
-      // Sign in with Supabase Auth
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
+      // For mock authentication, we'll use the API route
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
-      if (error) {
-        console.error('Login error:', error);
-        
-        // Handle specific error cases
-        if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password. Please try again.');
-        } else if (error.message.includes('Email not confirmed')) {
-          toast.error('Please check your email and click the confirmation link.');
-        } else if (error.message.includes('Too many requests')) {
-          toast.error('Too many login attempts. Please try again later.');
-        } else {
-          toast.error(`Login failed: ${error.message}`);
-        }
-        return;
-      }
+      const result = await response.json();
 
-      if (data.user) {
-        console.log('✅ Login successful for user:', data.user.email);
+      if (response.ok && result.user) {
+        console.log('✅ Login successful for user:', result.user.email);
         
-        // Create or get user profile
-        const userProfile = {
-          id: data.user.id,
-          email: data.user.email || '',
-          first_name: data.user.user_metadata?.first_name || 'User',
-          last_name: data.user.user_metadata?.last_name || '',
-          role: 'customer',
-          is_active: true,
-          created_at: data.user.created_at,
-          updated_at: new Date().toISOString()
-        };
-
         // Login user in context
-        login(userProfile);
+        login(result.user);
         
         toast.success('Login successful!');
         
         // Redirect to return URL
         console.log('🔄 Redirecting to:', returnTo);
         window.location.href = returnTo;
+      } else {
+        toast.error(result.error || 'Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Unexpected login error:', error);

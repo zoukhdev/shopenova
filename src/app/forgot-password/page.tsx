@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
 
       if (error) {
         console.error('Password reset error:', error);
-        toast.error(`Failed to send reset email: ${error.message}`);
+        toast.error('Failed to send reset email. Please try again.');
         return;
       }
 

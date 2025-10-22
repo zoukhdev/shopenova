@@ -22,7 +22,9 @@ function ResetPasswordForm() {
     // Check if we have a valid session for password reset
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      // For mock authentication, we'll always treat as invalid session
+      // In a real implementation, you would check if session?.user exists
+      if (false) { // Mock: always false
         setIsValidSession(true);
       } else {
         // Check URL parameters for access token
@@ -86,7 +88,7 @@ function ResetPasswordForm() {
 
       if (error) {
         console.error('Password update error:', error);
-        toast.error(`Failed to update password: ${error.message}`);
+        toast.error('Failed to update password. Please try again.');
         return;
       }
 

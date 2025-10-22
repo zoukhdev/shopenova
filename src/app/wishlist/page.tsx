@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../lib/cartSlice';
-import { removeFromWishlist } from '../../lib/wishlistSlice';
+import { removeFromWishlist, WishlistItem } from '../../lib/wishlistSlice';
 import { RootState } from '../../lib/store';
 import { useLanguage } from '../../contexts/LanguageContext';
 import toast from 'react-hot-toast';
@@ -26,8 +26,14 @@ export default function WishlistPage() {
     toast.success(t('wishlist.removed_from_wishlist'));
   };
 
-  const handleAddToCart = (item: {id: string; name: string; price: number; image: string; category: string; description: string; rating?: number; reviews?: number; originalPrice?: number; inStock?: boolean; brand?: string}) => {
-    dispatch(addToCart({ ...item, quantity: 1 }));
+  const handleAddToCart = (item: WishlistItem) => {
+    dispatch(addToCart({ 
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: 1 
+    }));
     toast.success(`${item.name} ${t('wishlist.added_to_cart')}`);
   };
 
