@@ -147,16 +147,18 @@ export interface SupportTicket {
   updated_at?: string;
 }
 
+// Import products statically to avoid dynamic import issues
+import { products as staticProducts } from '../data/products';
+
 // Database functions
 export const getProducts = async (): Promise<Product[]> => {
-  // Import and return products from the data file
+  // Return products from the static import
   try {
     console.log('🔄 Fetching products...');
-    const { products } = await import('../data/products');
-    console.log('✅ Products imported successfully:', products.length, 'products');
+    console.log('✅ Products imported successfully:', staticProducts.length, 'products');
     
     // Convert the products to match the Supabase Product interface
-    const convertedProducts = products.map(product => ({
+    const convertedProducts = staticProducts.map(product => ({
       id: product.id,
       name: product.name,
       price: product.price,
@@ -178,8 +180,8 @@ export const getProducts = async (): Promise<Product[]> => {
     console.log('✅ Products converted successfully:', convertedProducts.length, 'products');
     return convertedProducts;
   } catch (error) {
-    console.error('❌ Error importing products:', error);
-    // Return empty array if import fails
+    console.error('❌ Error processing products:', error);
+    // Return empty array if processing fails
     return [];
   }
 };
@@ -236,11 +238,12 @@ export const deleteProduct = async (id: string): Promise<boolean> => {
 };
 
 export const getCategories = async (): Promise<Category[]> => {
-  // Import products to get all categories
-  const { products } = await import('../data/products');
+  // Use static products to get all categories
+  console.log('🔄 Fetching categories...');
   
   // Extract unique categories from products
-  const uniqueCategories = [...new Set(products.map(p => p.category))];
+  const uniqueCategories = [...new Set(staticProducts.map(p => p.category))];
+  console.log('✅ Categories extracted:', uniqueCategories);
   
   // Create category objects with descriptions
   const categoryDescriptions: Record<string, string> = {
@@ -251,12 +254,15 @@ export const getCategories = async (): Promise<Category[]> => {
     'Accessories': 'Stylish bags, jewelry, and accessories'
   };
   
-  return uniqueCategories.map((category, index) => ({
+  const categories = uniqueCategories.map((category, index) => ({
     id: String(index + 1),
     name: category,
     description: categoryDescriptions[category] || `${category} products`,
     created_at: '2024-01-01T00:00:00Z'
   }));
+  
+  console.log('✅ Categories created:', categories.length, 'categories');
+  return categories;
 };
 
 export const getOrders = async (): Promise<Order[]> => {
