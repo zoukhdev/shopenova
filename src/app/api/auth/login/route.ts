@@ -62,27 +62,14 @@ export async function POST(request: NextRequest) {
     console.log('Attempting Supabase auth for:', email);
     const { data, error } = await signIn(email, password);
 
+    // Since we're using mock authentication, error will always be null
+    // In a real implementation, you would check the error here
     if (error) {
       console.error('Supabase auth error:', error);
-      console.error('Error message:', error.message);
-
-      // Provide more specific error messages
-      if (error.message?.includes('Invalid login credentials')) {
-        return NextResponse.json(
-          { error: 'Invalid email or password' },
-          { status: 401 }
-        );
-      } else if (error.message?.includes('Email not confirmed')) {
-        return NextResponse.json(
-          { error: 'Please check your email and click the verification link before signing in' },
-          { status: 401 }
-        );
-      } else {
-        return NextResponse.json(
-          { error: `Login failed: ${error.message}` },
-          { status: 401 }
-        );
-      }
+      return NextResponse.json(
+        { error: 'Authentication failed. Please try again' },
+        { status: 401 }
+      );
     }
 
     console.log('Supabase auth successful, data:', data);
