@@ -1,9 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
 // Mock Supabase client for demo purposes
 const supabase = {
   from: () => ({
@@ -25,9 +19,7 @@ const supabase = {
 };
 
 // Log successful initialization
-console.log('✅ Supabase client initialized successfully');
-console.log('   URL:', supabaseUrl);
-console.log('   Key length:', supabaseKey.length);
+console.log('✅ Supabase client initialized successfully (Mock Mode)');
 
 export { supabase };
 
