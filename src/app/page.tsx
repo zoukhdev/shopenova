@@ -85,6 +85,7 @@ export default function Home() {
         setCategories(categories);
         
         console.log('✅ Homepage: State updated with', products.slice(0, 20).length, 'featured products');
+        console.log('🖼️ Sample product image:', products[0]?.image);
       } catch (error) {
         console.error('❌ Homepage: Error fetching data:', error);
       } finally {

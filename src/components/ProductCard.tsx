@@ -66,6 +66,12 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                console.error('Image failed to load:', product.image, e);
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', product.image);
+              }}
             />
             {discountPercentage > 0 && (
               <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
