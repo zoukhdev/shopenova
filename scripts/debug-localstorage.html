@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalStorage Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .key {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .clear-btn {
+            background: #dc3545;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 LocalStorage Debug Tool</h1>
+        <p>This tool helps debug localStorage issues with the e-commerce app.</p>
+        
+        <div class="section">
+            <h3>Actions</h3>
+            <button onclick="refreshData()">🔄 Refresh Data</button>
+            <button onclick="clearAll()" class="clear-btn">🗑️ Clear All</button>
+            <button onclick="testLogin()">🧪 Test Login</button>
+        </div>
+        
+        <div class="section">
+            <h3>LocalStorage Contents</h3>
+            <div id="localStorageData"></div>
+        </div>
+        
+        <div class="section">
+            <h3>Token Decode Test</h3>
+            <div id="tokenDecode"></div>
+        </div>
+    </div>
+
+    <script>
+        function refreshData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                data[key] = localStorage.getItem(key);
+            }
+            
+            let html = '';
+            if (Object.keys(data).length === 0) {
+                html = '<p>No data in localStorage</p>';
+            } else {
+                for (const [key, value] of Object.entries(data)) {
+                    html += `
+                        <div>
+                            <div class="key">${key}:</div>
+                            <div class="value">${value}</div>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('localStorageData').innerHTML = html;
+            
+            // Test token decode
+            const token = localStorage.getItem('token');
+            let tokenHtml = '';
+            if (token) {
+                try {
+                    const tokenData = JSON.parse(atob(token));
+                    tokenHtml = `
+                        <div>
+                            <div class="key">Token Data:</div>
+                            <div class="value">${JSON.stringify(tokenData, null, 2)}</div>
+                        </div>
+                        <div>
+                            <div class="key">Token Expired:</div>
+                            <div class="value">${tokenData.exp && Date.now() > tokenData.exp ? 'YES' : 'NO'}</div>
+                        </div>
+                    `;
+                } catch (error) {
+                    tokenHtml = `
+                        <div>
+                            <div class="key">Token Decode Error:</div>
+                            <div class="value">${error.message}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                tokenHtml = '<p>No token found</p>';
+            }
+            document.getElementById('tokenDecode').innerHTML = tokenHtml;
+        }
+        
+        function clearAll() {
+            localStorage.clear();
+            refreshData();
+            alert('LocalStorage cleared!');
+        }
+        
+        function testLogin() {
+            // Simulate a login
+            const userData = {
+                id: 'demo-test-123',
+                email: 'customer@eshop.com',
+                first_name: 'Demo',
+                last_name: 'Customer',
+                role: 'customer',
+                is_active: true,
+                created_at: new Date().toISOString()
+            };
+            
+            const tokenData = {
+                userId: userData.id,
+                email: userData.email,
+                role: userData.role,
+                firstName: userData.first_name,
+                lastName: userData.last_name,
+                exp: Date.now() + 24 * 60 * 60 * 1000
+            };
+            
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('token', btoa(JSON.stringify(tokenData)));
+            
+            refreshData();
+            alert('Test login data added to localStorage!');
+        }
+        
+        // Load data on page load
+        refreshData();
+        
+        // Auto-refresh every 2 seconds
+        setInterval(refreshData, 2000);
+    </script>
+</body>
+</html>
