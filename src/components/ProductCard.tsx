@@ -68,10 +68,13 @@ export default function ProductCard({ product }: ProductCardProps) {
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 console.error('Image failed to load:', product.image, e);
+                // Set a fallback image
+                e.currentTarget.src = '/products_images/product1.jpg';
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', product.image);
               }}
+              unoptimized={true}
             />
             {discountPercentage > 0 && (
               <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
