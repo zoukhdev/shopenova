@@ -186,47 +186,47 @@ export const getProduct = async (id: string): Promise<Product | null> => {
 };
 
 export const createProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>): Promise<Product | null> => {
-  const { data, error } = await supabase
-    .from('products')
-    .insert([productData])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error creating product:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - in a real app, this would save to database
+  const newProduct: Product = {
+    ...productData,
+    id: Date.now().toString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('Mock: Product created', newProduct);
+  return newProduct;
 };
 
 export const updateProduct = async (id: string, updates: Partial<Product>): Promise<Product | null> => {
-  const { data, error } = await supabase
-    .from('products')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error updating product:', error);
+  // Mock implementation - in a real app, this would update the database
+  const products = await getProducts();
+  const productIndex = products.findIndex(p => p.id === id);
+  
+  if (productIndex === -1) {
     return null;
   }
-
-  return data;
+  
+  const updatedProduct = {
+    ...products[productIndex],
+    ...updates,
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('Mock: Product updated', updatedProduct);
+  return updatedProduct;
 };
 
 export const deleteProduct = async (id: string): Promise<boolean> => {
-  const { error } = await supabase
-    .from('products')
-    .delete()
-    .eq('id', id);
-
-  if (error) {
-    console.error('Error deleting product:', error);
+  // Mock implementation - in a real app, this would delete from database
+  const products = await getProducts();
+  const productExists = products.some(p => p.id === id);
+  
+  if (!productExists) {
     return false;
   }
-
+  
+  console.log('Mock: Product deleted', id);
   return true;
 };
 
@@ -255,333 +255,140 @@ export const getCategories = async (): Promise<Category[]> => {
 };
 
 export const getOrders = async (): Promise<Order[]> => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      customers (
-        first_name,
-        last_name,
-        email
-      )
-    `)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching orders:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching orders');
+  return [];
 };
 
 export const getOrder = async (id: string): Promise<Order | null> => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      customers (
-        first_name,
-        last_name,
-        email
-      ),
-      order_items (
-        *,
-        products (
-          name,
-          image
-        )
-      )
-    `)
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching order:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - return null for demo
+  console.log('Mock: Fetching order', id);
+  return null;
 };
 
 export const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>): Promise<Order | null> => {
-  // Generate order number
-  const { data: lastOrder } = await supabase
-    .from('orders')
-    .select('order_number')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
-
-  const orderNumber = lastOrder 
-    ? `ORD-${String(parseInt(lastOrder.order_number.split('-')[1]) + 1).padStart(3, '0')}`
-    : 'ORD-001';
-
-  const { data, error } = await supabase
-    .from('orders')
-    .insert([{ ...orderData, order_number: orderNumber }])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error creating order:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - in a real app, this would save to database
+  const newOrder: Order = {
+    ...orderData,
+    id: Date.now().toString(),
+    order_number: `ORD-${Date.now()}`,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('Mock: Order created', newOrder);
+  return newOrder;
 };
 
 export const updateOrder = async (id: string, updates: Partial<Order>): Promise<Order | null> => {
-  const { data, error } = await supabase
-    .from('orders')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error updating order:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - in a real app, this would update the database
+  console.log('Mock: Order updated', id, updates);
+  return null;
 };
 
 export const getUsers = async (): Promise<User[]> => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching users:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching users');
+  return [];
 };
 
 export const getUser = async (id: string): Promise<User | null> => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching user:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - return null for demo
+  console.log('Mock: Fetching user', id);
+  return null;
 };
 
 export const createUser = async (userData: Omit<User, 'id' | 'created_at' | 'updated_at'>): Promise<User | null> => {
-  const { data, error } = await supabase
-    .from('users')
-    .insert([userData])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error creating user:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - in a real app, this would save to database
+  const newUser: User = {
+    ...userData,
+    id: Date.now().toString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('Mock: User created', newUser);
+  return newUser;
 };
 
 export const getCustomers = async (): Promise<Customer[]> => {
-  const { data, error } = await supabase
-    .from('customers')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching customers:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching customers');
+  return [];
 };
 
 export const getCustomer = async (id: string): Promise<Customer | null> => {
-  const { data, error } = await supabase
-    .from('customers')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching customer:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - return null for demo
+  console.log('Mock: Fetching customer', id);
+  return null;
 };
 
 export const createCustomer = async (customerData: Omit<Customer, 'id' | 'created_at' | 'updated_at'>): Promise<Customer | null> => {
-  const { data, error } = await supabase
-    .from('customers')
-    .insert([customerData])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error creating customer:', error);
-    return null;
-  }
-
-  return data;
+  // Mock implementation - in a real app, this would save to database
+  const newCustomer: Customer = {
+    ...customerData,
+    id: Date.now().toString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('Mock: Customer created', newCustomer);
+  return newCustomer;
 };
 
 export const getInventory = async (): Promise<InventoryItem[]> => {
-  const { data, error } = await supabase
-    .from('inventory')
-    .select(`
-      *,
-      products (
-        name,
-        category,
-        price
-      )
-    `)
-    .order('last_updated', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching inventory:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching inventory');
+  return [];
 };
 
 export const getDiscountCodes = async (): Promise<DiscountCode[]> => {
-  const { data, error } = await supabase
-    .from('discount_codes')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching discount codes:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching discount codes');
+  return [];
 };
 
 export const getShippingMethods = async (): Promise<ShippingMethod[]> => {
-  const { data, error } = await supabase
-    .from('shipping_methods')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching shipping methods:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching shipping methods');
+  return [];
 };
 
 export const getSupportTickets = async (): Promise<SupportTicket[]> => {
-  const { data, error } = await supabase
-    .from('support_tickets')
-    .select(`
-      *,
-      customers (
-        first_name,
-        last_name,
-        email
-      ),
-      users (
-        first_name,
-        last_name
-      )
-    `)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching support tickets:', error);
-    return [];
-  }
-
-  return data || [];
+  // Mock implementation - return empty array for demo
+  console.log('Mock: Fetching support tickets');
+  return [];
 };
 
 // Analytics functions
 export const getAnalytics = async () => {
-  try {
-    // Get total sales
-    const { data: ordersData } = await supabase
-      .from('orders')
-      .select('total_amount');
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const totalSales = ordersData?.reduce((sum: number, order: any) => sum + order.total_amount, 0) || 0;
-
-    // Get total orders
-    const { count: totalOrders } = await supabase
-      .from('orders')
-      .select('*', { count: 'exact', head: true });
-
-    // Get total customers
-    const { count: totalCustomers } = await supabase
-      .from('customers')
-      .select('*', { count: 'exact', head: true });
-
-    // Get total products
-    const { count: totalProducts } = await supabase
-      .from('products')
-      .select('*', { count: 'exact', head: true });
-
-    // Mock conversion rate and cart abandonment for now
-    const conversionRate = 3.2;
-    const cartAbandonment = 68.5;
-
-    return {
-      totalSales,
-      totalOrders: totalOrders || 0,
-      totalCustomers: totalCustomers || 0,
-      totalProducts: totalProducts || 0,
-      conversionRate,
-      cartAbandonment
-    };
-  } catch (error) {
-    console.error('Error fetching analytics:', error);
-    return {
-      totalSales: 0,
-      totalOrders: 0,
-      totalCustomers: 0,
-      totalProducts: 0,
-      conversionRate: 0,
-      cartAbandonment: 0
-    };
-  }
+  // Mock implementation - return mock analytics data
+  console.log('Mock: Fetching analytics');
+  return {
+    totalSales: 125000,
+    totalOrders: 450,
+    totalCustomers: 320,
+    totalProducts: 20,
+    conversionRate: 3.2,
+    cartAbandonment: 68.5
+  };
 };
 
 // Authentication functions
 export const signIn = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    console.error('Error signing in:', error);
-    return { data: null, error };
-  }
-
-  return { data, error: null };
+  // Mock implementation - in a real app, this would authenticate with Supabase
+  console.log('Mock: Signing in', email);
+  return { data: null, error: null };
 };
 
 export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  return { error };
+  // Mock implementation - in a real app, this would sign out from Supabase
+  console.log('Mock: Signing out');
+  return { error: null };
 };
 
 export const getCurrentUser = async () => {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  return { user, error };
+  // Mock implementation - in a real app, this would get current user from Supabase
+  console.log('Mock: Getting current user');
+  return { user: null, error: null };
 };
