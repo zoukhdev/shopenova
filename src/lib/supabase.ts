@@ -150,25 +150,36 @@ export interface SupportTicket {
 // Database functions
 export const getProducts = async (): Promise<Product[]> => {
   // Import and return products from the data file
-  const { products } = await import('../data/products');
-  
-  // Convert the products to match the Supabase Product interface
-  return products.map(product => ({
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    original_price: product.originalPrice,
-    image: product.image,
-    images: product.images,
-    category: product.category,
-    description: product.description,
-    rating: product.rating,
-    reviews: product.reviews,
-    in_stock: product.inStock,
-    brand: product.brand,
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-01-01T00:00:00Z'
-  }));
+  try {
+    console.log('🔄 Fetching products...');
+    const { products } = await import('../data/products');
+    console.log('✅ Products imported successfully:', products.length, 'products');
+    
+    // Convert the products to match the Supabase Product interface
+    const convertedProducts = products.map(product => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      original_price: product.originalPrice,
+      image: product.image,
+      images: product.images,
+      category: product.category,
+      description: product.description,
+      rating: product.rating,
+      reviews: product.reviews,
+      in_stock: product.inStock,
+      brand: product.brand,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    }));
+    
+    console.log('✅ Products converted successfully:', convertedProducts.length, 'products');
+    return convertedProducts;
+  } catch (error) {
+    console.error('❌ Error importing products:', error);
+    // Return empty array if import fails
+    return [];
+  }
 };
 
 export const getProduct = async (id: string): Promise<Product | null> => {

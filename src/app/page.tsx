@@ -72,15 +72,21 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('🔄 Homepage: Fetching data...');
         const [products, categories] = await Promise.all([
           getProducts(),
           getCategories()
         ]);
         
+        console.log('✅ Homepage: Products fetched:', products.length);
+        console.log('✅ Homepage: Categories fetched:', categories.length);
+        
         setFeaturedProducts(products.slice(0, 20));
         setCategories(categories);
+        
+        console.log('✅ Homepage: State updated with', products.slice(0, 20).length, 'featured products');
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('❌ Homepage: Error fetching data:', error);
       } finally {
         setLoading(false);
       }
