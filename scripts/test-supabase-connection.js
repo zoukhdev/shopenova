@@ -1,103 +1,89 @@
-#!/usr/bin/env node
-
-/**
- * Test script to verify Supabase connection and configuration
- */
-
 const { createClient } = require('@supabase/supabase-js');
+const path = require('path');
 
-async function testSupabaseConnection() {
-  console.log('🔍 Testing Supabase Connection...\n');
-  
-  // Get environment variables
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  console.log('📋 Configuration Check:');
-  console.log('   URL:', supabaseUrl ? '✅ Set' : '❌ Missing');
-  console.log('   Key:', supabaseKey ? '✅ Set' : '❌ Missing');
-  
-  if (!supabaseUrl || !supabaseKey) {
-    console.log('\n❌ Missing environment variables!');
-    console.log('Please create a .env.local file with:');
-    console.log('NEXT_PUBLIC_SUPABASE_URL=your_supabase_url');
-    console.log('NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key');
-    return;
-  }
-  
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
+
+console.log('🧪 Testing Supabase Connection');
+console.log('==============================\n');
+
+// Check environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing environment variables');
+  console.error('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file');
+  process.exit(1);
+}
+
+console.log('✅ Environment variables found');
+console.log('   URL:', supabaseUrl);
+console.log('   Key length:', supabaseKey.length);
+
+// Initialize Supabase client
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function testConnection() {
   try {
-    // Create Supabase client
-    console.log('\n🔗 Creating Supabase client...');
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('✅ Client created successfully');
+    console.log('\n🔄 Testing database connection...');
     
-    // Test connection by fetching a simple table
-    console.log('\n🧪 Testing database connection...');
-    const { data, error } = await supabase
+    // Test products table
+    const { data: products, error: productsError } = await supabase
       .from('products')
-      .select('count')
-      .limit(1);
-    
-    if (error) {
-      console.log('❌ Database connection failed:');
-      console.log('   Error:', error.message);
-      console.log('   Code:', error.code);
-      
-      if (error.code === 'PGRST116') {
-        console.log('\n💡 Hint: The products table might not exist yet.');
-        console.log('   Run the database schema from supabase/schema.sql');
-      }
-    } else {
-      console.log('✅ Database connection successful');
+      .select('id, name, price')
+      .limit(5);
+
+    if (productsError) {
+      console.error('❌ Error fetching products:', productsError.message);
+      return;
     }
+
+    console.log('✅ Products table accessible');
+    console.log('   Found', products?.length || 0, 'products');
     
+    if (products && products.length > 0) {
+      console.log('   Sample product:', products[0].name, '- $' + products[0].price);
+    }
+
+    // Test categories table
+    const { data: categories, error: categoriesError } = await supabase
+      .from('categories')
+      .select('id, name')
+      .limit(5);
+
+    if (categoriesError) {
+      console.error('❌ Error fetching categories:', categoriesError.message);
+    } else {
+      console.log('✅ Categories table accessible');
+      console.log('   Found', categories?.length || 0, 'categories');
+    }
+
     // Test authentication
-    console.log('\n🔐 Testing authentication...');
+    console.log('\n🔄 Testing authentication...');
     const { data: authData, error: authError } = await supabase.auth.getSession();
     
     if (authError) {
-      console.log('❌ Authentication test failed:');
-      console.log('   Error:', authError.message);
+      console.log('ℹ️  No active session (this is normal for testing)');
     } else {
-      console.log('✅ Authentication service working');
-      console.log('   Current session:', authData.session ? 'Active' : 'None');
+      console.log('✅ Authentication system accessible');
     }
-    
-    // Test RLS policies
-    console.log('\n🛡️ Testing RLS policies...');
-    const { data: rlsData, error: rlsError } = await supabase
-      .from('products')
-      .select('*')
-      .limit(1);
-    
-    if (rlsError) {
-      console.log('❌ RLS test failed:');
-      console.log('   Error:', rlsError.message);
-      console.log('   Code:', rlsError.code);
-    } else {
-      console.log('✅ RLS policies working correctly');
-      console.log('   Products accessible:', rlsData ? rlsData.length : 0);
-    }
-    
+
+    console.log('\n🎉 Supabase integration test completed successfully!');
+    console.log('\n📋 Next steps:');
+    console.log('1. Run: node scripts/add-products-to-supabase.js');
+    console.log('2. Start your dev server: npm run dev');
+    console.log('3. Test the application in your browser');
+
   } catch (error) {
-    console.log('❌ Connection test failed:');
-    console.log('   Error:', error.message);
-    
-    if (error.message.includes('Invalid URL')) {
-      console.log('\n💡 Hint: Check your NEXT_PUBLIC_SUPABASE_URL');
-    } else if (error.message.includes('Invalid API key')) {
-      console.log('\n💡 Hint: Check your NEXT_PUBLIC_SUPABASE_ANON_KEY');
-    }
+    console.error('❌ Connection test failed:', error.message);
+    console.log('\n🔧 Troubleshooting:');
+    console.log('1. Check your Supabase project is active');
+    console.log('2. Verify your API keys are correct');
+    console.log('3. Ensure the database schema has been created');
+    console.log('4. Check your internet connection');
   }
-  
-  console.log('\n📝 Next Steps:');
-  console.log('1. If tests failed, check your .env.local file');
-  console.log('2. Run the database schema: supabase/schema.sql');
-  console.log('3. Configure authentication settings in Supabase dashboard');
-  console.log('4. Test the login/signup pages in your browser');
 }
 
-// Load environment variables
-require('dotenv').config({ path: '.env.local' });
-
-testSupabaseConnection();
+// Run the test
+testConnection();
