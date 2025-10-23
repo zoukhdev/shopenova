@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { apiService } from '../../../lib/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export default function AdminLoginPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function AdminLoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,26 +29,37 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      console.log('Attempting login with:', formData.email);
-      const response = await apiService.login(formData.email, formData.password);
-      console.log('Login response:', response);
+      console.log('🔐 Admin login attempt:', formData.email);
       
-      if (response.data) {
-        console.log('Login successful, storing token:', response.data.token);
-        // Store token in localStorage and cookies
-        localStorage.setItem('adminToken', response.data.token);
-        localStorage.setItem('adminUser', JSON.stringify(response.data.user));
+      // Use the same login API as the main login page
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const result = await response.json();
+      console.log('🔐 Admin login response:', result);
+
+      if (response.ok && result.user) {
+        console.log('✅ Admin login successful for user:', result.user.email);
         
-        // Set cookie for middleware
-        document.cookie = `adminToken=${response.data.token}; path=/; max-age=86400`; // 24 hours
+        // Login user in AuthContext
+        login(result.user);
         
-        toast.success('Login successful!');
-        console.log('Redirecting to /admin');
+        toast.success('Admin login successful!');
+        
         // Redirect to admin dashboard
+        console.log('🔄 Redirecting to /admin');
         window.location.href = '/admin';
       } else {
-        console.error('Login failed:', response.error);
-        throw new Error(response.error || 'Login failed');
+        console.error('❌ Admin login failed:', result.error);
+        toast.error(result.error || 'Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
