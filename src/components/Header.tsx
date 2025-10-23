@@ -21,7 +21,7 @@ export default function Header() {
   
   const pathname = usePathname();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
   const { t } = useLanguage();
   const { user, isAuthenticated, logout } = useAuth();
 

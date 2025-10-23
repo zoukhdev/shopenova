@@ -10,8 +10,8 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
   },
-  preloadedState: preloadedState as Partial<RootState>,
-});
+  preloadedState: preloadedState as any,
+} as any);
 
 // Save state to localStorage whenever the store changes
 store.subscribe(() => {

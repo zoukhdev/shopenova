@@ -34,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   
   // Get wishlist state from Redux
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
-  const isWishlisted = wishlistItems.some(item => item.id === product.id);
+  const isWishlisted = wishlistItems.some((item: any) => item.id === product.id);
 
   const handleAddToCart = async () => {
     setIsAddingToCart(true);

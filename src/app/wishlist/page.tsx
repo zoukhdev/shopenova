@@ -78,7 +78,7 @@ export default function WishlistPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wishlistItems.map((item) => (
+          {wishlistItems.map((item: any) => (
             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/20 overflow-hidden hover:shadow-xl dark:hover:shadow-gray-900/30 transition-all duration-300 hover-lift group">
               <div className="relative">
                 <Link href={`/products/${item.id}`}>

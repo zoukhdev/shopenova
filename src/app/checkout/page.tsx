@@ -69,7 +69,7 @@ export default function CheckoutPage() {
       const orderData = {
         customer_id: '1', // In a real app, this would come from authentication
         status: 'pending' as const,
-        total_amount: items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        total_amount: items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0),
         shipping_address: {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -362,7 +362,7 @@ export default function CheckoutPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
               
               <div className="space-y-4">
-                {items.map((item) => (
+                {items.map((item: any) => (
                   <div key={item.id} className="flex items-center space-x-4">
                     <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0"></div>
                     <div className="flex-1">
