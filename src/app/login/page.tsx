@@ -50,33 +50,79 @@ function LoginForm() {
     try {
       console.log('🔐 Attempting login with:', formData.email);
       
-      // For mock authentication, we'll use the API route
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      // Try direct Supabase authentication first
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
       });
 
-      const result = await response.json();
+      if (error) {
+        console.log('❌ Supabase auth failed, trying API route...');
+        
+        // Fallback to API route (which includes demo credentials)
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
 
-      if (response.ok && result.user) {
-        console.log('✅ Login successful for user:', result.user.email);
+        const result = await response.json();
+
+        if (response.ok && result.user) {
+          console.log('✅ Login successful via API route for user:', result.user.email);
+          
+          // Login user in context
+          login(result.user);
+          
+          toast.success('Login successful!');
+          
+          // Redirect to return URL
+          console.log('🔄 Redirecting to:', returnTo);
+          window.location.href = returnTo;
+        } else {
+          toast.error(result.error || 'Login failed. Please try again.');
+        }
+      } else if (data.user) {
+        console.log('✅ Supabase login successful for user:', data.user.email);
+        
+        // Get user profile from our users table
+        const { data: userProfile, error: profileError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileError) {
+          console.error('❌ Error fetching user profile:', profileError);
+          toast.error('Error loading user profile. Please try again.');
+          return;
+        }
+
+        // Create user data for context
+        const userData = {
+          id: data.user.id,
+          email: data.user.email || '',
+          first_name: userProfile?.first_name || data.user.user_metadata?.first_name || '',
+          last_name: userProfile?.last_name || data.user.user_metadata?.last_name || '',
+          role: userProfile?.role || 'customer',
+          is_active: userProfile?.is_active ?? true,
+          created_at: data.user.created_at,
+          updated_at: userProfile?.updated_at || data.user.updated_at
+        };
         
         // Login user in context
-        login(result.user);
+        login(userData);
         
         toast.success('Login successful!');
         
         // Redirect to return URL
         console.log('🔄 Redirecting to:', returnTo);
         window.location.href = returnTo;
-      } else {
-        toast.error(result.error || 'Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Unexpected login error:', error);

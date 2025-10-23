@@ -186,3 +186,4 @@ If you need help with the integration:
 4. Verify all environment variables are set correctly
 
 Happy selling! 🛒✨
+

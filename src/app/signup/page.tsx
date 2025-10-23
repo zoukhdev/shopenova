@@ -86,16 +86,61 @@ function SignupForm() {
     try {
       console.log('📝 Creating new user account...');
       
-      // For mock authentication, we'll simulate successful signup
-      console.log('✅ Mock signup successful for:', formData.email);
-      
-      setSignupSuccess(true);
-      toast.success('Account created successfully! You can now sign in.');
-      
-      // Redirect to login with returnTo
-      setTimeout(() => {
-        window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
-      }, 2000);
+      // Use Supabase authentication to create user
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            role: 'customer'
+          }
+        }
+      });
+
+      if (error) {
+        console.error('❌ Signup error:', error);
+        toast.error(error.message || 'Failed to create account. Please try again.');
+        return;
+      }
+
+      if (data.user) {
+        console.log('✅ User created successfully:', data.user.email);
+        
+        // Create user profile in our users table
+        try {
+          const { error: profileError } = await supabase
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: data.user.email,
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              phone: formData.phone,
+              role: 'customer',
+              is_active: true
+            });
+
+          if (profileError) {
+            console.error('❌ Error creating user profile:', profileError);
+            // Don't fail the signup if profile creation fails
+          } else {
+            console.log('✅ User profile created successfully');
+          }
+        } catch (profileError) {
+          console.error('❌ Error creating user profile:', profileError);
+        }
+        
+        setSignupSuccess(true);
+        toast.success('Account created successfully! Please check your email to verify your account.');
+        
+        // Redirect to login with returnTo
+        setTimeout(() => {
+          window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
+        }, 2000);
+      }
     } catch (error) {
       console.error('Unexpected signup error:', error);
       toast.error('An unexpected error occurred. Please try again.');
