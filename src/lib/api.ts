@@ -146,11 +146,6 @@ class ApiService {
     });
   }
 
-  // Categories API
-  async getCategories() {
-    return this.request<{ categories: Array<{id: string; name: string; description?: string}> }>('/api/categories');
-  }
-
   // Orders API
   async getOrders(params?: { status?: string; customerId?: string }) {
     const queryParams = new URLSearchParams();
@@ -196,7 +191,7 @@ class ApiService {
 
   // Categories API
   async getCategories() {
-    return this.request<{ categories: Category[] }>('/api/categories');
+    return this.request<{ categories: Array<{id: string; name: string; description?: string}> }>('/api/categories');
   }
 
   async getCategory(id: string) {
