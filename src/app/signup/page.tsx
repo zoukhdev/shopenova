@@ -85,6 +85,8 @@ function SignupForm() {
 
     try {
       console.log('📝 Creating new user account...');
+      console.log('🔍 Supabase client:', supabase);
+      console.log('🔍 Form data:', { email: formData.email, firstName: formData.firstName });
       
       // Use Supabase authentication to create user
       const { data, error } = await supabase.auth.signUp({
@@ -103,6 +105,10 @@ function SignupForm() {
 
       if (error) {
         console.error('❌ Signup error:', error);
+        console.error('❌ Error details:', {
+          message: error.message,
+          status: error.status
+        });
         toast.error(error.message || 'Failed to create account. Please try again.');
         return;
       }
