@@ -1,11 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
 export default function TestAuthPage() {
   const [result, setResult] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="p-8 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6">Supabase Auth Test</h1>
+        <div className="text-center">Loading...</div>
+      </div>
+    );
+  }
 
   const testSignup = async () => {
     setLoading(true);
