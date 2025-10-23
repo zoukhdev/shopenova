@@ -15,10 +15,12 @@ export async function POST(request: NextRequest) {
     }
     
     // Try Supabase authentication first
+    console.log('🔐 Attempting Supabase authentication for:', email);
     const { data, error } = await signIn(email, password);
     
     if (error) {
       console.error('Supabase auth error:', error);
+      console.log('🔄 Falling back to demo credentials...');
       
       // Check for demo credentials as fallback (for development/testing)
       const demoUsers = [
@@ -33,7 +35,10 @@ export async function POST(request: NextRequest) {
       
       const demoUser = demoUsers.find(user => user.email === email && user.password === password);
       
+      console.log('🔍 Checking demo credentials:', { email, found: !!demoUser });
+      
       if (demoUser) {
+        console.log('✅ Demo user found:', demoUser.email, demoUser.role);
         // Create demo user data
         const userData = {
           id: 'demo-' + Date.now(),
