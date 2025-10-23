@@ -2,11 +2,20 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Bell, User, Search } from 'lucide-react';
+import { Bell, User, Search, LogOut } from 'lucide-react';
 import DarkModeToggle from '../../../components/DarkModeToggle';
 import LanguageDropdown from '../../../components/LanguageDropdown';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export default function AdminHeader() {
+  const { logout, user } = useAuth();
+
+  const handleSignOut = () => {
+    logout();
+    // Redirect to home page
+    window.location.href = '/';
+  };
+
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-30 lg:static">
       <div className="px-2 sm:px-6 py-4 pl-16 lg:pl-4">
@@ -58,6 +67,15 @@ export default function AdminHeader() {
                     >
                       View Store
                     </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <div className="flex items-center">
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -98,7 +116,7 @@ export default function AdminHeader() {
                   <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <span className="text-sm font-medium">Admin User</span>
+                  <span className="text-sm font-medium">{user?.first_name || 'Admin User'}</span>
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -123,6 +141,15 @@ export default function AdminHeader() {
                     >
                       View Store
                     </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <div className="flex items-center">
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
