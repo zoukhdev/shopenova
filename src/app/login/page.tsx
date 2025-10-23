@@ -57,7 +57,15 @@ function LoginForm() {
       });
 
       if (error) {
-        console.log('❌ Supabase auth failed, trying API route...');
+        console.log('❌ Supabase auth failed:', error.message);
+        
+        // Check if it's an email not confirmed error
+        if (error.message.includes('email not confirmed') || error.message.includes('Email not confirmed')) {
+          toast.error('Please check your email and click the verification link to activate your account.');
+          return;
+        }
+        
+        console.log('🔄 Trying API route fallback...');
         
         // Fallback to API route (which includes demo credentials)
         const response = await fetch('/api/auth/login', {

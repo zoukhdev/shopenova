@@ -96,7 +96,8 @@ function SignupForm() {
             last_name: formData.lastName,
             phone: formData.phone,
             role: 'customer'
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/login`
         }
       });
 
@@ -134,12 +135,12 @@ function SignupForm() {
         }
         
         setSignupSuccess(true);
-        toast.success('Account created successfully! Please check your email to verify your account.');
+        toast.success('Account created successfully! Please check your email and click the verification link to activate your account.');
         
         // Redirect to login with returnTo
         setTimeout(() => {
           window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
       console.error('Unexpected signup error:', error);
