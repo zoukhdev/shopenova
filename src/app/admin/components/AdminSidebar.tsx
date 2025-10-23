@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import DarkModeToggle from '../../../components/DarkModeToggle';
 import LanguageDropdown from '../../../components/LanguageDropdown';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -42,6 +43,7 @@ const navigation = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
 
   return (
     <>
@@ -114,10 +116,7 @@ export default function AdminSidebar() {
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={() => {
-                // Clear admin data
-                localStorage.removeItem('adminToken');
-                localStorage.removeItem('adminUser');
-                document.cookie = 'adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                logout();
                 // Redirect to home
                 window.location.href = '/';
               }}
