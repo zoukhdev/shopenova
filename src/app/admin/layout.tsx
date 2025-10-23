@@ -35,47 +35,52 @@ export default function AdminLayout({
   const router = useRouter();
 
   useEffect(() => {
+    console.log('Admin Layout - Auth Check:', { 
+      isAuthenticated, 
+      user: user?.email, 
+      role: user?.role, 
+      loading,
+      showSidebar 
+    });
+    
     // Wait for auth context to finish loading
     if (loading) {
       console.log('Admin Layout - Auth context still loading...');
       return;
     }
 
-    // Debug logging
-    console.log('Admin Layout - Auth Check:', { isAuthenticated, user: user?.email, role: user?.role, loading });
-    
     // Check if user is authenticated
     if (isAuthenticated && user) {
-      // Check if user has admin role or is any authenticated user (for demo purposes)
-      const isAdmin = user.role === 'owner' || 
-                     user.role === 'admin' || 
-                     user.role === 'developer' ||
-                     user.role === 'inventory_manager' ||
-                     user.role === 'marketing_manager' ||
-                     user.role === 'staff' ||
-                     user.role === 'customer'; // Allow customers for demo
-
-      if (isAdmin) {
-        console.log('Admin Layout - Showing sidebar for user:', user.email);
-        setShowSidebar(true);
-        setIsCheckingAuth(false);
-      } else {
-        console.log('Admin Layout - User not admin, but allowing access for debugging');
-        setShowSidebar(true); // Temporarily show sidebar for debugging
-        setIsCheckingAuth(false);
-        // Temporarily disable redirect for debugging
-        // if (typeof window !== 'undefined') {
-        //   router.push('/admin/login');
-        // }
-      }
-    } else {
-      console.log('Admin Layout - Not authenticated, but allowing access for debugging');
-      setShowSidebar(true); // Temporarily show sidebar for debugging
+      console.log('Admin Layout - User is authenticated:', user.email, user.role);
+      setShowSidebar(true);
       setIsCheckingAuth(false);
-      // Temporarily disable redirect for debugging
-      // if (typeof window !== 'undefined') {
-      //   router.push('/admin/login');
-      // }
+    } else {
+      console.log('Admin Layout - User not authenticated, checking localStorage...');
+      
+      // Check localStorage directly as fallback
+      if (typeof window !== 'undefined') {
+        const storedUser = localStorage.getItem('user');
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        
+        if (storedUser && isAuthenticated === 'true') {
+          try {
+            const userData = JSON.parse(storedUser);
+            console.log('Admin Layout - Found user in localStorage:', userData.email);
+            setShowSidebar(true);
+            setIsCheckingAuth(false);
+            return;
+          } catch (error) {
+            console.error('Error parsing stored user:', error);
+          }
+        }
+      }
+      
+      console.log('Admin Layout - No authentication found, redirecting to login');
+      setShowSidebar(false);
+      setIsCheckingAuth(false);
+      if (typeof window !== 'undefined') {
+        router.push('/admin/login');
+      }
     }
   }, [isAuthenticated, user, router, loading]);
 

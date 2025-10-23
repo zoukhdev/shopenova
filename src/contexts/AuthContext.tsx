@@ -34,44 +34,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const getSession = useCallback(async () => {
-    try {
-      // Check localStorage for persisted user data
-      if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user');
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-        
-        console.log('🔍 AuthContext - Checking localStorage:', { 
-          storedUser: storedUser ? 'exists' : 'null', 
-          isAuthenticated 
-        });
-        
-        if (storedUser && isAuthenticated === 'true') {
-          try {
-            const userData = JSON.parse(storedUser);
-            console.log('🔄 Restoring user from localStorage:', userData.email, userData.role);
-            setUser(userData);
-          } catch (parseError) {
-            console.error('Error parsing stored user data:', parseError);
-            localStorage.removeItem('user');
-            localStorage.removeItem('isAuthenticated');
-          }
-        } else {
-          console.log('🔍 AuthContext - No stored user data found');
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Error getting session:', error);
-      setLoading(false);
-    }
-  }, []);
-
+  // Initialize user from localStorage on mount
   useEffect(() => {
-    // Get initial session
-    getSession();
-    // Skip auth state change listener for demo
-  }, [getSession]);
+    const initializeAuth = () => {
+      try {
+        if (typeof window !== 'undefined') {
+          const storedUser = localStorage.getItem('user');
+          const isAuthenticated = localStorage.getItem('isAuthenticated');
+          
+          console.log('🔍 AuthContext - Initializing:', { 
+            storedUser: storedUser ? 'exists' : 'null', 
+            isAuthenticated 
+          });
+          
+          if (storedUser && isAuthenticated === 'true') {
+            try {
+              const userData = JSON.parse(storedUser);
+              console.log('🔄 Restoring user from localStorage:', userData.email, userData.role);
+              setUser(userData);
+            } catch (parseError) {
+              console.error('Error parsing stored user data:', parseError);
+              localStorage.removeItem('user');
+              localStorage.removeItem('isAuthenticated');
+            }
+          } else {
+            console.log('🔍 AuthContext - No stored user data found');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, []);
 
   const handleSignIn = async (authUser: User) => {
     try {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { apiService, Analytics } from '../../lib/api';
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, AlertCircle, Tag, Truck, CreditCard, Megaphone, MessageSquare } from 'lucide-react';
 
@@ -17,8 +18,22 @@ interface Metric {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Debug authentication state
+  useEffect(() => {
+    console.log('Admin Dashboard - Auth State:', {
+      user: user?.email,
+      isAuthenticated,
+      authLoading,
+      localStorage: typeof window !== 'undefined' ? {
+        user: localStorage.getItem('user') ? 'exists' : 'null',
+        isAuthenticated: localStorage.getItem('isAuthenticated')
+      } : 'server'
+    });
+  }, [user, isAuthenticated, authLoading]);
 
   useEffect(() => {
     fetchAnalytics();
