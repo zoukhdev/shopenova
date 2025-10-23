@@ -98,17 +98,44 @@ function LoginForm() {
       } else if (data.user) {
         console.log('✅ Supabase login successful for user:', data.user.email);
         
-        // Get user profile from our users table
+        // Try to get user profile from our users table, but don't fail if it doesn't exist
         const { data: userProfile, error: profileError } = await supabase
           .from('users')
           .select('*')
           .eq('id', data.user.id)
           .single();
 
-        if (profileError) {
+        if (profileError && profileError.code !== 'PGRST116') {
           console.error('❌ Error fetching user profile:', profileError);
           toast.error('Error loading user profile. Please try again.');
           return;
+        }
+
+        // If user profile doesn't exist in our table, create it
+        if (profileError && profileError.code === 'PGRST116') {
+          console.log('🔄 User profile not found in database, creating...');
+          try {
+            const { error: insertError } = await supabase
+              .from('users')
+              .insert({
+                id: data.user.id,
+                email: data.user.email,
+                first_name: data.user.user_metadata?.first_name || '',
+                last_name: data.user.user_metadata?.last_name || '',
+                role: 'customer',
+                is_active: true
+              });
+
+            if (insertError) {
+              console.error('❌ Error creating user profile:', insertError);
+              // Don't fail the login if profile creation fails
+            } else {
+              console.log('✅ User profile created successfully');
+            }
+          } catch (createError) {
+            console.error('❌ Error creating user profile:', createError);
+            // Don't fail the login if profile creation fails
+          }
         }
 
         // Create user data for context
