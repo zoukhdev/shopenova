@@ -29,31 +29,53 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated and has admin role
-    const isAdmin = isAuthenticated && user && (
-      user.role === 'owner' || 
-      user.role === 'admin' || 
-      user.role === 'developer' ||
-      user.role === 'inventory_manager' ||
-      user.role === 'marketing_manager' ||
-      user.role === 'staff'
-    );
+    // Wait for auth context to finish loading
+    if (loading) {
+      console.log('Admin Layout - Auth context still loading...');
+      return;
+    }
 
-    if (isAdmin) {
-      setShowSidebar(true);
+    // Debug logging
+    console.log('Admin Layout - Auth Check:', { isAuthenticated, user: user?.email, role: user?.role, loading });
+    
+    // Check if user is authenticated
+    if (isAuthenticated && user) {
+      // Check if user has admin role or is any authenticated user (for demo purposes)
+      const isAdmin = user.role === 'owner' || 
+                     user.role === 'admin' || 
+                     user.role === 'developer' ||
+                     user.role === 'inventory_manager' ||
+                     user.role === 'marketing_manager' ||
+                     user.role === 'staff' ||
+                     user.role === 'customer'; // Allow customers for demo
+
+      if (isAdmin) {
+        console.log('Admin Layout - Showing sidebar for user:', user.email);
+        setShowSidebar(true);
+        setIsCheckingAuth(false);
+      } else {
+        console.log('Admin Layout - User not admin, redirecting to login');
+        setShowSidebar(false);
+        setIsCheckingAuth(false);
+        if (typeof window !== 'undefined') {
+          router.push('/admin/login');
+        }
+      }
     } else {
+      console.log('Admin Layout - Not authenticated, redirecting to login');
       setShowSidebar(false);
-      // Redirect to admin login if not authenticated
+      setIsCheckingAuth(false);
       if (typeof window !== 'undefined') {
         router.push('/admin/login');
       }
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, loading]);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -62,17 +84,26 @@ export default function AdminLayout({
       >
         <ThemeProvider>
           <LanguageProvider>
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex transition-colors duration-200">
-              {showSidebar && <AdminSidebar />}
-              <div className={`flex-1 flex flex-col ${showSidebar ? 'lg:ml-0' : ''}`}>
-                {showSidebar && <AdminHeader />}
-                <main className={`flex-1 overflow-auto p-1 sm:p-4 lg:p-6 ${showSidebar ? 'pt-16 lg:pt-4' : 'pt-4'}`}>
-                  <div className="max-w-full overflow-hidden">
-                    {children}
-                  </div>
-                </main>
+            {isCheckingAuth || loading ? (
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Checking authentication...</p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex transition-colors duration-200">
+                {showSidebar && <AdminSidebar />}
+                <div className={`flex-1 flex flex-col ${showSidebar ? 'lg:ml-0' : ''}`}>
+                  {showSidebar && <AdminHeader />}
+                  <main className={`flex-1 overflow-auto p-1 sm:p-4 lg:p-6 ${showSidebar ? 'pt-16 lg:pt-4' : 'pt-4'}`}>
+                    <div className="max-w-full overflow-hidden">
+                      {children}
+                    </div>
+                  </main>
+                </div>
+              </div>
+            )}
             <Toaster 
               position="top-right"
               toastOptions={{

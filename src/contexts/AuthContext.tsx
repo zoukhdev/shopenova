@@ -36,7 +36,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getSession = useCallback(async () => {
     try {
-      // Mock session for demo purposes
+      // Check localStorage for persisted user data
+      if (typeof window !== 'undefined') {
+        const storedUser = localStorage.getItem('user');
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        
+        if (storedUser && isAuthenticated === 'true') {
+          try {
+            const userData = JSON.parse(storedUser);
+            console.log('🔄 Restoring user from localStorage:', userData.email);
+            setUser(userData);
+          } catch (parseError) {
+            console.error('Error parsing stored user data:', parseError);
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
+          }
+        }
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error getting session:', error);
@@ -122,6 +138,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (userData: UserProfile) => {
     console.log('🔐 Manual login called:', userData.email);
     setUser(userData);
+    // Persist to localStorage for session persistence
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('isAuthenticated', 'true');
+    }
   };
 
   const logout = async () => {
@@ -134,11 +155,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       setUser(null);
+      // Clear localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+      }
       console.log('✅ User logged out successfully');
     } catch (error) {
       console.error('Error during logout:', error);
       // Still clear user state even if logout fails
       setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+      }
     }
   };
 
