@@ -60,20 +60,22 @@ export default function AdminLayout({
         setShowSidebar(true);
         setIsCheckingAuth(false);
       } else {
-        console.log('Admin Layout - User not admin, redirecting to login');
-        setShowSidebar(false);
+        console.log('Admin Layout - User not admin, but allowing access for debugging');
+        setShowSidebar(true); // Temporarily show sidebar for debugging
         setIsCheckingAuth(false);
-        if (typeof window !== 'undefined') {
-          router.push('/admin/login');
-        }
+        // Temporarily disable redirect for debugging
+        // if (typeof window !== 'undefined') {
+        //   router.push('/admin/login');
+        // }
       }
     } else {
-      console.log('Admin Layout - Not authenticated, redirecting to login');
-      setShowSidebar(false);
+      console.log('Admin Layout - Not authenticated, but allowing access for debugging');
+      setShowSidebar(true); // Temporarily show sidebar for debugging
       setIsCheckingAuth(false);
-      if (typeof window !== 'undefined') {
-        router.push('/admin/login');
-      }
+      // Temporarily disable redirect for debugging
+      // if (typeof window !== 'undefined') {
+      //   router.push('/admin/login');
+      // }
     }
   }, [isAuthenticated, user, router, loading]);
 

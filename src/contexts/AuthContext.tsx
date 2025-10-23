@@ -41,16 +41,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const storedUser = localStorage.getItem('user');
         const isAuthenticated = localStorage.getItem('isAuthenticated');
         
+        console.log('🔍 AuthContext - Checking localStorage:', { 
+          storedUser: storedUser ? 'exists' : 'null', 
+          isAuthenticated 
+        });
+        
         if (storedUser && isAuthenticated === 'true') {
           try {
             const userData = JSON.parse(storedUser);
-            console.log('🔄 Restoring user from localStorage:', userData.email);
+            console.log('🔄 Restoring user from localStorage:', userData.email, userData.role);
             setUser(userData);
           } catch (parseError) {
             console.error('Error parsing stored user data:', parseError);
             localStorage.removeItem('user');
             localStorage.removeItem('isAuthenticated');
           }
+        } else {
+          console.log('🔍 AuthContext - No stored user data found');
         }
       }
       setLoading(false);
