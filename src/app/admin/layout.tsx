@@ -54,6 +54,13 @@ export default function AdminLayout({
       console.log('Admin Layout - User is authenticated:', user.email, user.role);
       setShowSidebar(true);
       setIsCheckingAuth(false);
+      
+      // Force redirect to admin dashboard if on login page
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (currentPath === '/admin/login') {
+        console.log('Admin Layout - Redirecting authenticated user from login to dashboard');
+        router.push('/admin');
+      }
       return;
     }
 
@@ -68,6 +75,13 @@ export default function AdminLayout({
           console.log('Admin Layout - Found user in localStorage:', userData.email);
           setShowSidebar(true);
           setIsCheckingAuth(false);
+          
+          // Force redirect to admin dashboard if on login page
+          const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+          if (currentPath === '/admin/login') {
+            console.log('Admin Layout - Redirecting localStorage user from login to dashboard');
+            router.push('/admin');
+          }
           return;
         } catch (error) {
           console.error('Error parsing stored user:', error);
