@@ -88,3 +88,5 @@ console.log('5. Deploy to Vercel with your Supabase credentials');
 
 console.log('\n🎉 Your e-commerce site will be fully functional with real database integration!');
 
+
+

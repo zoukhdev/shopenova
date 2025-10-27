@@ -54,33 +54,40 @@ export default function AdminLayout({
       console.log('Admin Layout - User is authenticated:', user.email, user.role);
       setShowSidebar(true);
       setIsCheckingAuth(false);
-    } else {
-      console.log('Admin Layout - User not authenticated, checking localStorage...');
+      return;
+    }
+
+    // Check localStorage directly as fallback
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('user');
+      const isAuthenticatedStorage = localStorage.getItem('isAuthenticated');
       
-      // Check localStorage directly as fallback
-      if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user');
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-        
-        if (storedUser && isAuthenticated === 'true') {
-          try {
-            const userData = JSON.parse(storedUser);
-            console.log('Admin Layout - Found user in localStorage:', userData.email);
-            setShowSidebar(true);
-            setIsCheckingAuth(false);
-            return;
-          } catch (error) {
-            console.error('Error parsing stored user:', error);
-          }
+      if (storedUser && isAuthenticatedStorage === 'true') {
+        try {
+          const userData = JSON.parse(storedUser);
+          console.log('Admin Layout - Found user in localStorage:', userData.email);
+          setShowSidebar(true);
+          setIsCheckingAuth(false);
+          return;
+        } catch (error) {
+          console.error('Error parsing stored user:', error);
         }
       }
-      
+    }
+    
+    // Only redirect to login if we're not already on the login page
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    if (currentPath !== '/admin/login') {
       console.log('Admin Layout - No authentication found, redirecting to login');
       setShowSidebar(false);
       setIsCheckingAuth(false);
       if (typeof window !== 'undefined') {
         router.push('/admin/login');
       }
+    } else {
+      console.log('Admin Layout - Already on login page, not redirecting');
+      setShowSidebar(false);
+      setIsCheckingAuth(false);
     }
   }, [isAuthenticated, user, router, loading]);
 
